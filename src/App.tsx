@@ -1,21 +1,58 @@
 import React from 'react';
-import './App.scss';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
-interface Props {
-  onClick: () => void;
-  children: React.ReactNode;
-}
+import { FavoritesProvider } from './context/FavoritesContext';
+import { CartProvider } from './context/CartContext';
 
-export const Provider: React.FC<Props> = React.memo(({ onClick, children }) => (
-  <button type="button" onClick={onClick}>
-    {children}
-  </button>
-));
+import { HomePage } from './pages/HomePage';
+import { PhonesPage } from './pages/PhonesPage';
+import { TabletsPage } from './pages/TabletsPage';
+import { AccessoriesPage } from './pages/AccessoriesPage';
+import { FavoritesPage } from './pages/FavoritesPage';
+import { CartPage } from './pages/CartPage';
+import { ProductDetailsPage } from './pages/ProductDetailsPage';
+
+import { Header } from './components/Header/Header';
+import { Footer } from './components/Footer/Footer';
+
+import styles from './App.module.scss';
 
 export const App: React.FC = () => {
   return (
-    <div className="starter">
-      <Provider onClick={() => ({})}>TodoList</Provider>
-    </div>
+    <FavoritesProvider>
+      <CartProvider>
+        <div className={styles.app}>
+          <Header />
+
+          <main className={styles.main}>
+            <Routes>
+              {/* Главная страница */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="home" element={<Navigate to="/" replace />} />
+
+              {/* Страницы каталогов */}
+              <Route path="phones" element={<PhonesPage />} />
+              <Route path="tablets" element={<TabletsPage />} />
+              <Route path="accessories" element={<AccessoriesPage />} />
+
+              {/* Избранное и Корзина */}
+              <Route path="favorites" element={<FavoritesPage />} />
+              <Route path="cart" element={<CartPage />} />
+
+              {/* Карточка товара */}
+              <Route
+                path=":category/:productId"
+                element={<ProductDetailsPage />}
+              />
+
+              {/* 404 Страница */}
+              <Route path="*" element={<div>Page not found</div>} />
+            </Routes>
+          </main>
+
+          <Footer />
+        </div>
+      </CartProvider>
+    </FavoritesProvider>
   );
 };
