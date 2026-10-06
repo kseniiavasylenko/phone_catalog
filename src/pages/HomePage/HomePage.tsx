@@ -6,10 +6,22 @@ import { ProductCard } from '../../components/ProductCard';
 import styles from './HomePage.module.scss';
 import { getBaseUrl } from '../../utils/BaseUrl';
 
-const bannerImages = [
-  'img/banner-phones.png',
-  'img/banner-tablets.png',
-  'img/banner-accessories.png',
+const bannerItems = [
+  {
+    image: 'img/banner-phones.png',
+    link: '/phones',
+    alt: 'Banner phones',
+  },
+  {
+    image: 'img/banner-tablets.png',
+    link: '/tablets',
+    alt: 'Banner tablets',
+  },
+  {
+    image: 'img/banner-accessories.png',
+    link: '/accessories',
+    alt: 'Banner accessories',
+  },
 ];
 
 export const HomePage: React.FC = () => {
@@ -27,7 +39,7 @@ export const HomePage: React.FC = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % bannerImages.length);
+      setCurrentSlide(prev => (prev + 1) % bannerItems.length);
     }, 5000);
 
     return () => clearInterval(timer);
@@ -35,12 +47,12 @@ export const HomePage: React.FC = () => {
 
   const handlePrevSlide = () => {
     setCurrentSlide(
-      prev => (prev - 1 + bannerImages.length) % bannerImages.length,
+      prev => (prev - 1 + bannerItems.length) % bannerItems.length,
     );
   };
 
   const handleNextSlide = () => {
-    setCurrentSlide(prev => (prev + 1) % bannerImages.length);
+    setCurrentSlide(prev => (prev + 1) % bannerItems.length);
   };
 
   const handleTouchStart = (e: TouchEvent) => {
@@ -82,12 +94,10 @@ export const HomePage: React.FC = () => {
   };
 
   const brandNew = useMemo(() => {
-    // Отбираем товары без скидки (полная цена равна текущей цене)
     const withoutDiscount = products.filter(
       product => product.fullPrice === product.price,
     );
 
-    // Если товары без скидки найдены — берем их, иначе фоллбек на все товары
     const targetProducts =
       withoutDiscount.length > 0 ? withoutDiscount : products;
 
@@ -149,9 +159,16 @@ export const HomePage: React.FC = () => {
               className={styles.bannerTrack}
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
-              {bannerImages.map((imgSrc, index) => (
-                <div key={imgSrc} className={styles.bannerSlide}>
-                  <img src={imgSrc} alt={`Banner ${index + 1}`} />
+              {bannerItems.map(item => (
+                <div key={item.image} className={styles.bannerSlide}>
+                  <img src={item.image} alt={item.alt} />
+                  <Link
+                    to={item.link}
+                    className={styles.orderButton}
+                    data-cy="orderButton"
+                  >
+                    ORDER NOW
+                  </Link>
                 </div>
               ))}
             </div>
@@ -176,7 +193,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className={styles.dots}>
-          {bannerImages.map((_, index) => (
+          {bannerItems.map((_, index) => (
             <button
               key={index}
               type="button"
@@ -229,8 +246,6 @@ export const HomePage: React.FC = () => {
         <div className={styles.productsList} ref={brandNewRef}>
           {brandNew.map(product => (
             <div key={product.id} className={styles.productCardWrapper}>
-              {/* hideDiscount: в этой секции скидка не показывается,
-                  даже если товар попал сюда через фоллбек со скидкой */}
               <ProductCard product={product} hideDiscount />
             </div>
           ))}
@@ -318,7 +333,6 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Hot prices: скидки показываются как обычно (hideDiscount не передан) */}
         <div className={styles.productsList} ref={hotPricesRef}>
           {hotPrices.map(product => (
             <div key={product.id} className={styles.productCardWrapper}>

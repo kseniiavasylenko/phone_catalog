@@ -33,7 +33,7 @@ export const Footer = () => {
             Github
           </a>
           <a
-            href="#"
+            href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
@@ -41,7 +41,7 @@ export const Footer = () => {
             Contacts
           </a>
           <a
-            href="#"
+            href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
@@ -55,12 +55,12 @@ export const Footer = () => {
           <span className={styles.backToTopText}>Back to top</span>
           <button
             type="button"
-            className={styles.backToTopBtn}
+            className={styles.backTestBtn || styles.backToTopBtn}
             onClick={scrollToTop}
             aria-label="Back to top"
           >
             <img
-              src={`${getBaseUrl()}/img/icons/arrow-up.svg`}
+              src={`${getBaseUrl()}img/icons/arrow-up.svg`}
               alt="Arrow up"
               className={styles.icon}
             />
